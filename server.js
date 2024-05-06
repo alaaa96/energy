@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import fs from "fs";
 import Ingr from "./Models/ingrediant.js";
 import bodyParser from "body-parser";
-import 'dotenv/config'
+import "dotenv/config";
 // initial app
 const app = express();
 const PORT = 5000;
@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // connect DB
 
 mongoose
-  .connect(process.env.DB_URI, { dbName: "energyfood"})
+  .connect(process.env.DB_URI, { dbName: "energyfood" })
   .then(() => console.log("DB connected"))
   .catch((error) => console.log("error when connected DB ", error));
 // end connect db
@@ -28,15 +28,6 @@ app.get("/", (req, res) => {
     return res.end(data);
   });
 });
-
-//get page html for plat
-app.get("/plat", (req, res) => {
-  fs.readFile("./plat.html", (err, data) => {
-    if (err) console.log(err);
-    return res.end(data);
-  });
-});
-
 
 // end get
 // try Post method
@@ -54,7 +45,18 @@ app.post("/add", async (req, res) => {
     res.status(500).send({ msg: "invalid request ", error });
   }
 });
+
 //end post
+// get all data in DB
+app.get("/data", async(req, res)=>{
+  try {
+    const getData = await Ingr.find()
+    res.status(200).send({msg:"all ingredients gutted", getData})
+  } catch (error) {
+    res.status(500).send({ msg: "invalid request ", error });
+  }
+}) 
+//end get
 //end routes
 
 // lancement serveur

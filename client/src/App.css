@@ -1,0 +1,47 @@
+*{
+  padding: 0;
+  margin: 0;
+  background-color: black;
+  color: white;
+}
+.Welcome{
+  margin: 1% auto;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+.Navbar{
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  padding: 20px;
+}
+.Navbar>*{
+  background-color: transparent;
+  color: transparent;
+  padding: 10px 20px;
+  list-style: none;
+  
+}
+.Navbar>*:hover{
+  background-color: transparent;
+  color: transparent;
+  
+}
+.Navbar >* li{
+  background-color: white;
+  color: black;
+  padding: 10px 20px;
+  list-style: none;
+  font-size: 1.5rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+.Navbar>* li:hover{
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}
