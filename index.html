@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: aliceblue;
+        }
+        form{
+            width: 70%;
+            margin: 50px auto;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        label{
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+        input{
+            display: block;
+            width: 50%;
+            height: 40px;
+            border-radius: 10px;
+            outline: 0;
+            border: 0;
+            margin: 5px auto;
+        }
+        select{
+            display: block;
+            width: 50%;
+            height: 40px;
+            border-radius: 10px;
+            outline: 0;
+            border: 0;
+            margin: 5px auto;
+        }
+        #sub{
+            width: 20%;
+            height: 40px;
+            padding: 10px;
+            cursor: pointer;
+            margin: 20px auto;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+    </style>
+    <form action="/add" method="post">
+        <label for="">Nom</label>
+        <input type="text" name="nom"><br>
+        <label for="">type</label>
+        <select name="type" id="type" >
+            <option value="crue">crue</option>
+            <option value="cuit">cuit</option>
+            
+        </select><br>
+        <label for="">protein</label>
+        <input type="reel" name="protein"><br>
+        <label for="">carbs</label>
+        <input type="reel" name="carbs"><br>
+        <label for="">fat</label>
+        <input type="reel" name="fat"><br>
+        <input id="sub" type="submit" value="submit">
+    </form>
+    
+</body>
+</html>
