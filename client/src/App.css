@@ -45,3 +45,72 @@
   color: white;
   border: 2px solid white;
 }
+
+
+.Ingrs{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.Ingr{
+  width: 25%;
+  border: 1px solid white;
+  color: aliceblue;
+  margin: 20px;
+  padding: 20px;
+
+  border-radius: 20px;
+
+}
+.typeHeadline{
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 2.5rem;
+  
+}
+.searchPart{
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  margin: 3% 40% 4%;
+}
+.searchPart select{
+  width: 20%;
+  padding: 20px;
+  font-size: 1.5rem;
+  border: 0;
+  outline: 0;
+  text-align: center;
+  border-bottom: 2px solid white;
+  border-radius: 20px;
+}
+
+.searchPart input{
+  width: 30%;
+  outline: 0;
+  border: 0;
+  background-color: aliceblue;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 1.5rem;
+  color: black;
+  font-weight: bold;
+  font-style: italic;
+}
+.searchPart button{
+  border: 0;
+  outline: 0;
+  background-color: white;
+  border-radius: 50px;
+  padding: 10px 20px;
+  color: black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.searchPart button:hover{
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}

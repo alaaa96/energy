@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "front": "cd client && npm i",
     "start": "nodemon server.js",
-    "inst" : "concurrently \"npm i\" \"npm run front\"",
-    "lancer" : "cd client && npm start",
+    "inst": "concurrently \"npm i\" \"npm run front\"",
+    "lancer": "cd client && npm start",
     "dev": "concurrently \"npm start\" \"npm run lancer\""
   },
   "keywords": [],
@@ -18,6 +18,7 @@
   "dependencies": {
     "body-parser": "^1.20.2",
     "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.3.2",
