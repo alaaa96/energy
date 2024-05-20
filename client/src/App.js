@@ -6,6 +6,7 @@ import Plats from "./Components/Plats"
 import Calcul from "./Components/Calcul"
 import WelcomePage from "./Components/WelcomePage"
 import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [Ingrs, setIngrs] = useState([])
   return (

@@ -1,11 +1,11 @@
 console.clear();
 import express from "express";
 import mongoose from "mongoose";
-import fs from "fs";
-import Ingr from "./Models/ingrediant.js";
 import bodyParser from "body-parser";
 import "dotenv/config";
 import cors from "cors";
+import IngrsRoutes from "./Routes/IngrsRoutes.js";
+import PlatsRoutes from "./Routes/PlatsRoutes.js";
 // initial app
 const app = express();
 const PORT = 5000;
@@ -24,42 +24,8 @@ mongoose
 // end connect db
 
 //routes
-// get for file HTML
-app.get("/", (req, res) => {
-  fs.readFile("./index.html", (err, data) => {
-    if (err) console.log(err);
-    return res.end(data);
-  });
-});
-
-// end get
-// try Post method
-app.post("/add", async (req, res) => {
-  try {
-    const kca = req.body.protein * 4 + req.body.carbs * 4 + req.body.fat * 9;
-    const newIngr = Ingr({ ...req.body, kcalories: kca });
-
-    await newIngr.save();
-    fs.readFile("./submit.html", (err, data) => {
-      if (err) console.log(err);
-      return res.end(data);
-    });
-  } catch (error) {
-    res.status(500).send({ msg: "invalid request ", error });
-  }
-});
-
-//end post
-// get all data in DB
-app.get("/data", async (req, res) => {
-  try {
-    const getData = await Ingr.find();
-    res.status(200).send({ msg: "all ingredients gutted", getData });
-  } catch (error) {
-    res.status(500).send({ msg: "invalid request ", error });
-  }
-});
-//end get
+app.use("/", IngrsRoutes);
+app.use("/plat", PlatsRoutes);
 //end routes
 
 // lancement serveur
