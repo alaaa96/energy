@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Card from "react-bootstrap/Card";
 const Plats = () => {
   const [Plats, setPlats] = useState([]);
   useEffect(() => {
