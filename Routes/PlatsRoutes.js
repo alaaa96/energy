@@ -24,5 +24,16 @@ router.get("/dataplat", async (req, res) => {
   }
 }); //end get
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const idPlats = req.params.id;
+    const platDeleted = await Plat.deleteOne({ _id: idPlats });
+    platDeleted.deletedCount
+      ? res.status(200).send({ msg: "Plat deleted succufully", platDeleted })
+      : res.status(200).send({ msg: "Plat already deleted " });
+  } catch (error) {
+    res.status(500).send({ msg: "invalid request ", error });
+  }
+});
 
 export default router;

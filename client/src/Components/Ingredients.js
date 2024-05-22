@@ -1,33 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 const Ingredients = ({ Ingrs, setIngrs }) => {
-
   const navigate = useNavigate();
   const [selectType, setselectType] = useState("");
   const [searchIngrs, setsearchIngrs] = useState("");
-  const [showFPlat, setshowFPlat] = useState(true);
+  const [showFPlat, setshowFPlat] = useState(false);
   const [showFPIngrs, setshowFPIngrs] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-  // function select ingrs
-  const handleCheckboxChange = (ingredient) => {
-    setSelectedIngredients((prevSelected) => {
-      if (prevSelected.includes(ingredient)) {
-        // Remove the ingredient if it's already in the selected list
-        return prevSelected.filter((ing) => ing !== ingredient);
-      } else {
-        // Add the ingredient if it's not in the selected list
-        return [...prevSelected, ingredient];
-      }
-    });
-  };
-  //end
   //partie ajout plats
   const [newPlats, setnewPlats] = useState({
     nom: "",
     contenu: [],
-    taille: "",
+    taille: "S",
     prix: 0,
   });
   const handleChangePlats = (event) => {
@@ -52,9 +39,12 @@ const Ingredients = ({ Ingrs, setIngrs }) => {
       await axios
         .post("http://localhost:5000/plat/addplat", newPlats)
         .then((result) => alert(result.data.msg));
-        navigate("/Plats")
+      navigate("/Plats");
     } catch (error) {
       console.log(error);
+      if(error.response.data.error){
+        alert("you have make some error please don't forget to add all data nom taille and prix")
+      }
     }
   };
 
@@ -73,6 +63,14 @@ const Ingredients = ({ Ingrs, setIngrs }) => {
     };
     getIngrs();
   }, []);
+
+  const addIngrToPlats = (data)=>{
+    setSelectedIngredients([...selectedIngredients,data ])
+  }
+  const removeIngrFromPlats = (data) => {
+    setSelectedIngredients(selectedIngredients.filter(ingr => ingr !== data));
+  };
+ 
 
   return (
     <>
@@ -147,15 +145,16 @@ const Ingredients = ({ Ingrs, setIngrs }) => {
             return (
               <div key={index} className="Ingr">
                 {" "}
-                <input
-                  type="checkbox"
-                  name="selectIngrs"
-                  id="selectIngrs"
-                  onChange={() => handleCheckboxChange(ingr)}
-                />
                 <h3> Nom: {ingr.nom}</h3> <p>Protein :{ingr.protein}</p>{" "}
                 <p>Carbs :{ingr.carbs}</p> <p>Fat : {ingr.fat}</p>{" "}
                 <p>Kcalories : {ingr.kcalories}</p> <p> {ingr.type} </p>
+                <div className="btn">
+                  {selectedIngredients.includes(ingr) ? (
+                    <Button onClick={()=>removeIngrFromPlats(ingr)} variant="danger">DEL</Button>
+                  ) : (
+                    <Button onClick={()=>addIngrToPlats(ingr)} variant="success">ADD in Plat</Button>
+                  )}
+                </div>
               </div>
             );
           })

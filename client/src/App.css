@@ -194,3 +194,25 @@
   font-style: italic;
   margin: 20px 0;
 }
+
+.Delete{
+  border: 0;
+  outline: 0;
+  background-color: white;
+  border-radius: 50px;
+  padding: 10px 20px;
+  color: black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.Delete:hover{
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}
+.oublier{
+  color: red;
+  font-size: 1.5rem;
+}
