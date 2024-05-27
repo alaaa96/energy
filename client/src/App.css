@@ -216,3 +216,31 @@
   color: red;
   font-size: 1.5rem;
 }
+
+
+.ingrFil{
+  display: flex;
+  border: 1px solid white;
+  justify-content: space-around;
+  align-items: center;
+  width: 95%;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.ingrFil >span{
+ font-size: 1rem;
+ width: 40%;
+}
+.ingrFil >input{
+  width: 20%;
+  font-size: 1rem;
+}
+.ingrFil >button{
+  width: 30%;
+  font-size: 1rem;
+  margin: 0;
+}
+.RemoveBtn{
+  background-color: red !important;
+  color: white !important;
+}

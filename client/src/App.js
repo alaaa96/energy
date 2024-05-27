@@ -9,15 +9,16 @@ import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [Ingrs, setIngrs] = useState([])
+ 
   return (
     <div>
       <Navbar />
       
       <Routes>
       <Route path="/" element={ <WelcomePage/> } />
-      <Route path="/Ingredients" element={ <Ingredients  Ingrs={Ingrs} setIngrs={setIngrs} /> } />
-      <Route path="/Plats" element={ <Plats /> } />
-      <Route path="/Calcul" element={ <Calcul />} />
+      <Route path="/Ingredients" element={ <Ingredients Ingrs={Ingrs} setIngrs={setIngrs} /> } />
+      <Route path="/Plats" element={ <Plats Ingrs={Ingrs} /> } />
+      <Route path="/Calcul" element={ <Calcul/>} />
       </Routes>
     </div>
   );
