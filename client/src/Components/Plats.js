@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/esm/Button";
+import Table from "react-bootstrap/Table";
 
 const Plats = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [showFPlat, setShowFPlat] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [plats, setPlats] = useState([]);
   const [changeWhenDelete, setChangeWhenDelete] = useState(false);
-
+  // State to hold total nutritional values
+  const [totals, setTotals] = useState({
+    fat: 0,
+    carbs: 0,
+    protein: 0,
+    kcalories: 0,
+  });
   // Fetch the list of plats from the server
   useEffect(() => {
     const getNosPlats = async () => {
@@ -64,9 +71,26 @@ const Plats = () => {
   // Add a new plat to the server
   const addPlats = async () => {
     try {
-      const result = await axios.post("http://localhost:5000/plat/addplat", newPlats);
+      const result = await axios.post("http://localhost:5000/plat/addplat", {
+        ...newPlats,
+        total: totals,
+      });
       alert(result.data.msg);
-      navigate("/Plats");
+      setChangeWhenDelete(!changeWhenDelete);
+      setNewPlats({
+        nom: "",
+        contenu: [],
+        taille: "S",
+        prix: 0,
+      });
+      setFilterIngr("");
+      setSelectedIngredients([]);
+      setTotals({
+        fat: 0,
+        carbs: 0,
+        protein: 0,
+        kcalories: 0,
+      });
     } catch (error) {
       console.log(error);
       if (error.response.data.error) {
@@ -77,19 +101,46 @@ const Plats = () => {
 
   // Add an ingredient to the selected ingredients list
   const addIngrToPlats = (data, quantity) => {
-    const newData = {
-      ...data,
-      fat: +((data.fat / 100) * quantity).toFixed(2),
-      carbs: +((data.carbs / 100) * quantity).toFixed(2),
-      protein: +((data.protein / 100) * quantity).toFixed(2),
-      kcalories: +((data.kcalories / 100) * quantity).toFixed(2),
-    };
-    setSelectedIngredients([...selectedIngredients, newData]);
+    const condition =
+      selectedIngredients.filter((el) => el.nom === data.nom).length > 0;
+    if (!condition) {
+      if (quantity) {
+        const newData = {
+          ...data,
+          fat: +((data.fat / 100) * quantity).toFixed(2),
+          carbs: +((data.carbs / 100) * quantity).toFixed(2),
+          protein: +((data.protein / 100) * quantity).toFixed(2),
+          kcalories: +((data.kcalories / 100) * quantity).toFixed(2),
+        };
+        setTotals((prevTotals) => ({
+          fat: +(prevTotals.fat + newData.fat).toFixed(2),
+          carbs: +(prevTotals.carbs + newData.carbs).toFixed(2),
+          protein: +(prevTotals.protein + newData.protein).toFixed(2),
+          kcalories: +(prevTotals.kcalories + newData.kcalories).toFixed(2),
+        }));
+
+        setSelectedIngredients([...selectedIngredients, newData]);
+      } else {
+        setTotals((prevTotals) => ({
+          fat: +(prevTotals.fat + data.fat).toFixed(2),
+          carbs: +(prevTotals.carbs + data.carbs).toFixed(2),
+          protein: +(prevTotals.protein + data.protein).toFixed(2),
+          kcalories: +(prevTotals.kcalories + data.kcalories).toFixed(2),
+        }));
+        setSelectedIngredients([...selectedIngredients, data]);
+      }
+    }
   };
 
   // Remove an ingredient from the selected ingredients list
   const removeIngrFromPlats = (data) => {
     setSelectedIngredients(selectedIngredients.filter((ingr) => ingr !== data));
+    setTotals((prevTotals) => ({
+      fat: +(prevTotals.fat - data.fat).toFixed(2),
+      carbs: +(prevTotals.carbs - data.carbs).toFixed(2),
+      protein: +(prevTotals.protein - data.protein).toFixed(2),
+      kcalories: +(prevTotals.kcalories - data.kcalories).toFixed(2),
+    }));
   };
 
   // State to manage ingredient search and quantity inputs
@@ -110,12 +161,10 @@ const Plats = () => {
     getIngredients();
   }, []);
 
-  console.log("selectedIngredients : ", selectedIngredients)
-
   return (
     <div>
       <h1>Nos Plats</h1>
-      <div className="searchPart">
+      <div className="searchPart plats">
         <button onClick={() => setShowFPlat(!showFPlat)}>Add Plats</button>
       </div>
       <div>
@@ -127,6 +176,7 @@ const Plats = () => {
               name="nom"
               placeholder="Nom du Plat"
               onChange={handleChangePlats}
+              value={newPlats.nom}
             />
             <div className="taillePlats">
               <label>Selection Taille du Plat:</label>
@@ -134,6 +184,7 @@ const Plats = () => {
                 name="taille"
                 id="selectTypeCss"
                 onChange={handleChangePlats}
+                value={newPlats.taille}
               >
                 <option value="S">S</option>
                 <option value="M">M</option>
@@ -145,13 +196,19 @@ const Plats = () => {
               name="prix"
               placeholder="Prix du Plat"
               onChange={handleChangePlats}
+              value={newPlats.prix}
             />
             <span>SVP selection le contenu du plat</span>
-            <input
-              type="text"
-              placeholder="Search Ingredients"
-              onChange={(e) => setFilterIngr(e.target.value)}
-            />
+
+            <div className="clearSearch">
+              <input
+                type="text"
+                placeholder="Search Ingredients"
+                onChange={(e) => setFilterIngr(e.target.value)}
+                value={filterIngr}
+              />
+              <button onClick={()=>setFilterIngr("")} > <img src="./images/del.png" alt="" /> </button>
+            </div>
             {filterIngr &&
               ingredients
                 .filter((el) =>
@@ -165,21 +222,13 @@ const Plats = () => {
                       placeholder="Qte"
                       onChange={(e) => setQuantity(+e.target.value)}
                     />
-                    {selectedIngredients.includes(item) ? (
-                      <button
-                        className="RemoveBtn"
-                        onClick={() => removeIngrFromPlats(item)}
-                      >
-                        Remove
-                      </button>
-                    ) : (
-                      <button onClick={() => addIngrToPlats(item, quantity)}>
-                        Add to Plat
-                      </button>
-                    )}
+
+                    <button onClick={() => addIngrToPlats(item, quantity)}>
+                      Add to Plat
+                    </button>
                   </div>
                 ))}
-            <button onClick={addPlats}>Add</button>
+            <button onClick={() => addPlats()}>Add</button>
           </div>
         )}
       </div>
@@ -200,6 +249,26 @@ const Plats = () => {
               )}
               <h5>Taille: {plat.taille}</h5>
               <h5>Prix: {plat.prix} dt</h5>
+              {plat.total.map((tb, i) => (
+                <Table key={i} striped bordered hover variant="dark">
+                  <thead>
+                    <tr>
+                      <th> Protein </th>
+                      <th>Carbs</th>
+                      <th>Fat</th>
+                      <th>kcalories</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td> {tb.protein} </td>
+                      <td> {tb.carbs} </td>
+                      <td> {tb.fat} </td>
+                      <td> {tb.kcalories} </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              ))}
               <Button variant="danger" onClick={() => deletePlats(plat._id)}>
                 Delete
               </Button>
@@ -214,6 +283,46 @@ const Plats = () => {
           </h1>
         )}
       </div>
+
+      {selectedIngredients.length > 0 && (
+        <Table striped bordered hover variant="dark" className="tableIngr">
+          <thead>
+            <tr>
+              <th>Num</th>
+              <th>Nom</th>
+              <th>protein</th>
+              <th>carbs</th>
+              <th>fat</th>
+              <th>kcalories</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+
+          {selectedIngredients.length > 0 &&
+            selectedIngredients.map((selIngr, index) => (
+              <tbody key={index}>
+                <tr>
+                  <td> {index + 1} </td>
+                  <td> {selIngr.nom} </td>
+                  <td> {selIngr.protein} </td>
+                  <td> {selIngr.carbs} </td>
+                  <td> {selIngr.fat} </td>
+                  <td> {selIngr.kcalories} </td>
+                  <td>
+                    {" "}
+                    <Button
+                      onClick={() => removeIngrFromPlats(selIngr)}
+                      variant="danger"
+                    >
+                      {" "}
+                      Del
+                    </Button>{" "}
+                  </td>
+                </tr>
+              </tbody>
+            ))}
+        </Table>
+      )}
     </div>
   );
 };

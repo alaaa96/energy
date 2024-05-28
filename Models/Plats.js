@@ -18,6 +18,10 @@ const platSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  total: {
+    type: Array,
+    required: true,
+  },
 });
 
 const Plats = mongoose.model("Plats", platSchema);
