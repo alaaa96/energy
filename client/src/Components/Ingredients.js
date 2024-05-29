@@ -18,6 +18,7 @@ const Ingredients = ({ Ingrs, setIngrs }) => {
     };
     getIngrs();
   }, []);
+  
 
   return (
     <>

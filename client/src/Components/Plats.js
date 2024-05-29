@@ -91,6 +91,7 @@ const Plats = () => {
         protein: 0,
         kcalories: 0,
       });
+      setShowFPlat(false);
     } catch (error) {
       console.log(error);
       if (error.response.data.error) {
@@ -105,29 +106,58 @@ const Plats = () => {
       selectedIngredients.filter((el) => el.nom === data.nom).length > 0;
     if (!condition) {
       if (quantity) {
+        if (data.nom !== "OEUF") {
+          const newData = {
+            ...data,
+            fat: +((data.fat / 100) * quantity).toFixed(2),
+            carbs: +((data.carbs / 100) * quantity).toFixed(2),
+            protein: +((data.protein / 100) * quantity).toFixed(2),
+            kcalories: +((data.kcalories / 100) * quantity).toFixed(2),
+            quantity: quantity,
+          };
+          setTotals((prevTotals) => ({
+            fat: +(prevTotals.fat + newData.fat).toFixed(2),
+            carbs: +(prevTotals.carbs + newData.carbs).toFixed(2),
+            protein: +(prevTotals.protein + newData.protein).toFixed(2),
+            kcalories: +(prevTotals.kcalories + newData.kcalories).toFixed(2),
+          }));
+          setSelectedIngredients([...selectedIngredients, newData]);
+          console.log("newData : ", newData);
+        } else {
+          const newData = {
+            ...data,
+            fat: +(data.fat * quantity).toFixed(2),
+            carbs: +(data.carbs * quantity).toFixed(2),
+            protein: +(data.protein * quantity).toFixed(2),
+            kcalories: +(data.kcalories * quantity).toFixed(2),
+            quantity: quantity,
+          };
+          setTotals((prevTotals) => ({
+            fat: +(prevTotals.fat + newData.fat).toFixed(2),
+            carbs: +(prevTotals.carbs + newData.carbs).toFixed(2),
+            protein: +(prevTotals.protein + newData.protein).toFixed(2),
+            kcalories: +(prevTotals.kcalories + newData.kcalories).toFixed(2),
+          }));
+          setSelectedIngredients([...selectedIngredients, newData]);
+          console.log("newData : ", newData);
+        }
+
+        setQuantity(0);
+      } else {
         const newData = {
           ...data,
-          fat: +((data.fat / 100) * quantity).toFixed(2),
-          carbs: +((data.carbs / 100) * quantity).toFixed(2),
-          protein: +((data.protein / 100) * quantity).toFixed(2),
-          kcalories: +((data.kcalories / 100) * quantity).toFixed(2),
-        };
-        setTotals((prevTotals) => ({
-          fat: +(prevTotals.fat + newData.fat).toFixed(2),
-          carbs: +(prevTotals.carbs + newData.carbs).toFixed(2),
-          protein: +(prevTotals.protein + newData.protein).toFixed(2),
-          kcalories: +(prevTotals.kcalories + newData.kcalories).toFixed(2),
-        }));
 
-        setSelectedIngredients([...selectedIngredients, newData]);
-      } else {
+          quantity: 100,
+        };
         setTotals((prevTotals) => ({
           fat: +(prevTotals.fat + data.fat).toFixed(2),
           carbs: +(prevTotals.carbs + data.carbs).toFixed(2),
           protein: +(prevTotals.protein + data.protein).toFixed(2),
           kcalories: +(prevTotals.kcalories + data.kcalories).toFixed(2),
         }));
-        setSelectedIngredients([...selectedIngredients, data]);
+
+        setSelectedIngredients([...selectedIngredients, newData]);
+        console.log("newData : ", newData);
       }
     }
   };
@@ -207,7 +237,10 @@ const Plats = () => {
                 onChange={(e) => setFilterIngr(e.target.value)}
                 value={filterIngr}
               />
-              <button onClick={()=>setFilterIngr("")} > <img src="./images/del.png" alt="" /> </button>
+              <button onClick={() => setFilterIngr("")}>
+                {" "}
+                <img src="./images/del.png" alt="" />{" "}
+              </button>
             </div>
             {filterIngr &&
               ingredients
@@ -242,6 +275,7 @@ const Plats = () => {
                 plat.contenu.map((cont, i) => (
                   <div key={i}>
                     <span>{cont.nom}</span>
+                    { cont.nom ==="OEUF" ? <span> {cont.quantity} P </span> : <span> {cont.quantity} G </span>  }
                   </div>
                 ))
               ) : (
@@ -294,6 +328,7 @@ const Plats = () => {
               <th>carbs</th>
               <th>fat</th>
               <th>kcalories</th>
+              <th>Quantity</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -308,6 +343,8 @@ const Plats = () => {
                   <td> {selIngr.carbs} </td>
                   <td> {selIngr.fat} </td>
                   <td> {selIngr.kcalories} </td>
+                  { selIngr.nom ==="OEUF" ? <td> {selIngr.quantity} P </td> : <td> {selIngr.quantity} G </td>  }
+                  
                   <td>
                     {" "}
                     <Button
